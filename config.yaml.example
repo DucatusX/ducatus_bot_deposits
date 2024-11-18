@@ -1,0 +1,12 @@
+bot:
+  token: ''
+network:
+  is_testnet: False
+  currency: ''
+  host: ''
+  port: 8080
+  username: ''
+  password: ''
+  decimals: 8
+  master_wallet: ''
+  request_attempts: 10
