@@ -4,6 +4,7 @@ from aiogram.types import Message
 
 start_router = Router()
 
+
 @start_router.message(CommandStart())
 async def cmd_start(message: Message):
     await message.answer(f"Hello, {message.chat.first_name}!")

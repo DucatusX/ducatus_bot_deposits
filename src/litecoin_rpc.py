@@ -1,10 +1,12 @@
 import logging
-from bitcoinrpc import BitcoinRPC
-from http.client import RemoteDisconnected, CannotSendRequest
-from httpx import ReadTimeout, Timeout
+from http.client import CannotSendRequest, RemoteDisconnected
 from socket import timeout
-from ducatus_bot_deposits.src.settings import NetworkSettings, settings
+
+from bitcoinrpc import BitcoinRPC
+from httpx import ReadTimeout, Timeout
+
 import ducatus_bot_deposits.src.consts as consts
+from ducatus_bot_deposits.src.settings import NetworkSettings, settings
 
 
 def retry_on_http_disconnection(req):
@@ -12,9 +14,10 @@ def retry_on_http_disconnection(req):
         for attempt in range(settings.network.request_attempts):
             try:
                 return await req(*args, **kwargs)
-            except (timeout, TimeoutError, CannotSendRequest, ReadTimeout, RemoteDisconnected) as e:
+            except (timeout, TimeoutError, CannotSendRequest,
+                    ReadTimeout, RemoteDisconnected) as e:
                 logging.warning(
-                    f"error while trying send rpc request (attempt {attempt + 1}) (details: {e})"
+                    f"error while trying send rpc request (attempt {attempt + 1}) ({e})"
                 )
         return None
     return wrapper
@@ -30,9 +33,9 @@ class DucatuscoreInterface:
             (net_settings.username, net_settings.password),
             timeout=Timeout(
                 timeout=consts.TIMEOUT,
-                connect=consts.CONNECT_TIMEOUT,  # Connection timeout in seconds
-                read=consts.READ_TIMEOUT,        # Read timeout in seconds
-                write=consts.WRITE_TIMEOUT       # Write timeout in seconds
+                connect=consts.CONNECT_TIMEOUT,
+                read=consts.READ_TIMEOUT,
+                write=consts.WRITE_TIMEOUT
             )
         )
 

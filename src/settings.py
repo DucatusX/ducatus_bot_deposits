@@ -1,13 +1,17 @@
+import os
 from dataclasses import dataclass
+
 import yaml
-from marshmallow_dataclass import class_schema
 from aiogram.types import BotCommand
+from marshmallow_dataclass import class_schema
 
 import consts
+
 
 @dataclass
 class BotSettings:
     token: str
+
 
 @dataclass
 class NetworkSettings:
@@ -21,12 +25,16 @@ class NetworkSettings:
     master_wallet: str
     request_attempts: int
 
+
 @dataclass
 class Settings:
     bot: BotSettings
     network: NetworkSettings
 
-with open('../config.yaml') as config_file:
+
+config_path = "/../config.yaml"
+
+with open(os.path.dirname(__file__) + config_path) as config_file:
     config_data = yaml.safe_load(config_file)
 
 settings: Settings = class_schema(Settings)().load(config_data)
