@@ -13,12 +13,14 @@ def retry_on_http_disconnection(req):
     async def wrapper(*args, **kwargs):
         for attempt in range(settings.network.request_attempts):
             try:
-                return await req(*args, **kwargs)
+                result = await req(*args, **kwargs)
             except (timeout, TimeoutError, CannotSendRequest,
-                    ReadTimeout, RemoteDisconnected) as e:
+                        ReadTimeout, RemoteDisconnected) as e:
                 logging.warning(
                     f"error while trying send rpc request (attempt {attempt + 1}) ({e})"
                 )
+            else:
+                return result
         return None
     return wrapper
 
