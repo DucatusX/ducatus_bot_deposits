@@ -3,6 +3,8 @@ import yaml
 from marshmallow_dataclass import class_schema
 from aiogram.types import BotCommand
 
+import consts
+
 @dataclass
 class BotSettings:
     token: str
@@ -31,5 +33,5 @@ settings: Settings = class_schema(Settings)().load(config_data)
 
 
 commands = [
-    BotCommand(command='balance', description='get balance'),
+    BotCommand(command=consts.BALANCE_COMMAND, description='get balance'),
 ]

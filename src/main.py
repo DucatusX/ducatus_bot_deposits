@@ -1,11 +1,15 @@
 import asyncio
-import logging
+import logging.config
 from aiogram import Bot,Dispatcher
 from aiogram.types import BotCommandScopeDefault
 
 from settings import settings, commands
 from handler.start_handler import start_router
 from handler.balance_handler import balance_router
+from logger_config import logger_config
+
+
+logging.config.dictConfig(logger_config)
 
 
 async def main():
@@ -16,9 +20,9 @@ async def main():
     await dp.start_polling(bot)
 
 if __name__ == '__main__':
-    logging.basicConfig(
-        level=logging.INFO,
-        filename='../logs/.log',
-        format='%(asctime)s %(levelname)s: %(message)s'
-    )
+    # logging.basicConfig(
+    #     level=logging.INFO,
+    #     filename='../logs/.log',
+    #     format='%(asctime)s %(levelname)s: %(message)s'
+    # )
     asyncio.run(main())
