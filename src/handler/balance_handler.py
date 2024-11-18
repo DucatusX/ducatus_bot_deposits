@@ -6,6 +6,7 @@ from ducatus_bot_deposits.src.consts import BALANCE_COMMAND
 from ducatus_bot_deposits.src.litecoin_rpc import ducatus_rpc_interface
 from ducatus_bot_deposits.src.settings import settings
 
+
 balance_router = Router()
 
 
