@@ -6,7 +6,6 @@ from src.consts import BALANCE_COMMAND
 from src.litecoin_rpc import ducatus_rpc_interface
 from src.settings import settings
 
-
 balance_router = Router()
 
 
