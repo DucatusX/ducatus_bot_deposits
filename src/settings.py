@@ -5,7 +5,7 @@ import yaml
 from aiogram.types import BotCommand
 from marshmallow_dataclass import class_schema
 
-import consts
+import src.consts as consts
 
 
 @dataclass
