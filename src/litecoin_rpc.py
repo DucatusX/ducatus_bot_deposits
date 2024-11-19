@@ -5,8 +5,8 @@ from socket import timeout
 from bitcoinrpc import BitcoinRPC
 from httpx import ReadTimeout, Timeout
 
-import ducatus_bot_deposits.src.consts as consts
-from ducatus_bot_deposits.src.settings import NetworkSettings, settings
+import src.consts as consts
+from src.settings import NetworkSettings, settings
 
 
 def retry_on_http_disconnection(req):
