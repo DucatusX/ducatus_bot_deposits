@@ -11,9 +11,10 @@ from src.settings import commands, settings
 
 logging.config.dictConfig(logger_config)
 
+bot = Bot(token=settings.bot.token)
+
 
 async def main():
-    bot = Bot(token=settings.bot.token)
     dp = Dispatcher()
     dp.include_routers(start_router, balance_router)
     await bot.set_my_commands(commands, BotCommandScopeDefault())

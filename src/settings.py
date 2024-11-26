@@ -42,4 +42,5 @@ settings: Settings = class_schema(Settings)().load(config_data)
 
 commands = [
     BotCommand(command=consts.BALANCE_COMMAND, description='get balance'),
+    BotCommand(command=consts.STOP_COMMAND, description='stop alerts'),
 ]
