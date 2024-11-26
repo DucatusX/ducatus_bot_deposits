@@ -9,8 +9,8 @@ from src.consts import REDIS_BALANCE_KEY, REDIS_CHAT_IDS_KEY
 class RedisClient:
     def __init__(self) -> None:
         self.pool = redis.ConnectionPool(
-            host=os.getenv("REDIS_HOST"), port=os.getenv("REDIS_PORT"),
-            db=os.getenv("REDIS_DB"), decode_responses=True
+            host=os.getenv("REDIS_HOST", "localhost"), port=os.getenv("REDIS_PORT", 6379),
+            db=os.getenv("REDIS_DB", 0), decode_responses=True
         )
 
     async def update_balance(self, balance_value: str) -> None:

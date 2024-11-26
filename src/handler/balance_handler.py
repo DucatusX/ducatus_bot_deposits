@@ -1,9 +1,11 @@
+from decimal import Decimal
+
 from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
 
 from src.consts import BALANCE_COMMAND
-from src.litecoin_rpc import ducatus_rpc_interface
+from src.redis_utils import redis_client
 from src.settings import settings
 
 balance_router = Router()
@@ -12,10 +14,11 @@ balance_router = Router()
 @balance_router.message(Command(BALANCE_COMMAND))
 async def balance(message: Message):
     await message.answer('Please wait...')
-    balance_value = await ducatus_rpc_interface.call_async('getbalance')
+    balance_value = await redis_client.get_balance()
     if balance_value:
+        normal_balance = Decimal(balance_value) / 10**settings.network.decimals
         await message.answer(
-            f'Balance: {balance_value} {settings.network.currency}'
+            f'Balance: {normal_balance} {settings.network.currency}'
         )
         return None
 
