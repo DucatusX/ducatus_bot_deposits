@@ -8,5 +8,5 @@ WRITE_TIMEOUT = 60.0
 
 REDIS_BALANCE_KEY = 'balance'
 REDIS_CHAT_IDS_KEY = 'chat_ids'
-
-
+REDIS_DATETIME_KEY = 'last_alert'
+REDIS_DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'

@@ -8,9 +8,13 @@ from src.settings import settings
 
 async def update_balance() -> None:
     balance_value = await ducatus_rpc_interface.call_async('getbalance')
-    if balance_value:
-        decimal_balance = Decimal(str(balance_value)) * 10**settings.network.decimals
-        await redis_client.update_balance(str(decimal_balance))
-        logging.info(f"update balance (current value: {decimal_balance})")
+    if not balance_value:
+        return None
+
+    decimal_balance = Decimal(str(balance_value)) * 10**settings.network.decimals
+    await redis_client.update_balance(str(decimal_balance))
+    logging.info(f"update balance (current value: {decimal_balance})")
+
+
 
     return None

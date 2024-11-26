@@ -18,9 +18,11 @@ async def main():
     bot = Bot(token=settings.bot.token)
     dp = Dispatcher()
     dp.include_routers(start_router, balance_router)
+
     scheduler = AsyncIOScheduler()
     scheduler.add_job(update_balance, "interval", minutes=1)
     scheduler.start()
+
     await bot.set_my_commands(commands, BotCommandScopeDefault())
     await dp.start_polling(bot)
 
