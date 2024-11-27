@@ -1,6 +1,6 @@
 import os
-from typing import Set
 from datetime import datetime
+from typing import Set
 
 import redis.asyncio as redis
 
@@ -11,8 +11,10 @@ from src.consts import REDIS_DATETIME_FORMAT, REDIS_DATETIME_KEY
 class RedisClient:
     def __init__(self) -> None:
         self.pool = redis.ConnectionPool(
-            host=os.getenv("REDIS_HOST", "localhost"), port=os.getenv("REDIS_PORT", 6379),
-            db=os.getenv("REDIS_DB", 0), decode_responses=True
+            host=os.getenv("REDIS_HOST", "localhost"),
+            port=os.getenv("REDIS_PORT", 6379),
+            db=os.getenv("REDIS_DB", 0),
+            decode_responses=True
         )
 
     async def update_balance(self, balance_value: str) -> None:
@@ -21,7 +23,7 @@ class RedisClient:
 
         return None
 
-    async def get_balance(self) -> str:
+    async def get_balance(self) -> str | None:
         conn = redis.Redis(connection_pool=self.pool)
         data = await conn.get(consts.REDIS_BALANCE_KEY)
 
@@ -39,7 +41,7 @@ class RedisClient:
 
         return None
 
-    async def get_chat_ids(self) -> Set[int]:
+    async def get_chat_ids(self) -> Set[int] | None:
         conn = redis.Redis(connection_pool=self.pool)
         data = await conn.smembers(consts.REDIS_CHAT_IDS_KEY)
 
@@ -59,5 +61,6 @@ class RedisClient:
             return datetime.strptime(str_time, REDIS_DATETIME_FORMAT)
 
         return None
+
 
 redis_client: RedisClient = RedisClient()

@@ -9,7 +9,7 @@ from src.handler.balance_handler import balance_router
 from src.handler.start_handler import start_router
 from src.logger_config import logger_config
 from src.settings import commands, settings
-from src.tasks import update_balance
+from src.tasks import AlertContext, NoAlertState
 
 logging.config.dictConfig(logger_config)
 
@@ -20,7 +20,9 @@ async def main():
     dp.include_routers(start_router, balance_router)
 
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(update_balance, "interval", minutes=1)
+    alert_context = AlertContext(NoAlertState(), bot)
+    scheduler.add_job(alert_context.update_balance, "interval", minutes=1)
+    scheduler.add_job(alert_context.send_alerts, "interval", minutes=2)
     scheduler.start()
 
     await bot.set_my_commands(commands, BotCommandScopeDefault())
