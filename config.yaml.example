@@ -1,5 +1,7 @@
 bot:
   token: ''
+  request_attempts: 5
+  request_delay: 10
 network:
   is_testnet: False
   currency: ''

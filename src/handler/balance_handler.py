@@ -16,7 +16,7 @@ async def balance(message: Message):
     await message.answer('Please wait...')
     balance_value = await redis_client.get_balance()
     if balance_value:
-        normal_balance = Decimal(balance_value) / 10**settings.network.decimals
+        normal_balance = Decimal(balance_value) / settings.degree
         await message.answer(
             f'Balance: {normal_balance} {settings.network.currency}'
         )

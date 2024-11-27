@@ -1,5 +1,5 @@
 from __future__ import annotations
-
+import asyncio
 import logging
 from abc import ABC, abstractmethod
 from datetime import datetime
@@ -49,13 +49,9 @@ class AlertContext:
         if not balance_value:
             return None
 
-        decimals = 10**settings.network.decimals
-        decimal_balance = Decimal(str(balance_value)) * decimals
-        current_balance = await redis_client.get_balance()
-
-        if not current_balance or Decimal(current_balance) != decimal_balance:
-            await redis_client.update_balance(str(decimal_balance))
-            logging.info(f"update balance (current value: {decimal_balance})")
+        decimal_balance = Decimal(str(balance_value)) * settings.degree
+        await redis_client.update_balance(str(decimal_balance))
+        logging.info(f"update balance (current value: {decimal_balance})")
 
         return None
 
@@ -69,8 +65,7 @@ class NoAlertState(AlertStateInterface):
         if not balance_decimal:
             return None
 
-        decimals = 10**settings.network.decimals
-        balance_value = Decimal(balance_decimal) / decimals
+        balance_value = Decimal(balance_decimal) / settings.degree
         if balance_value <= NORMAL_LEVEL['high']:
             self.context.transition_to(LowBalanceAlertState(forced=True))
         return None
@@ -82,8 +77,7 @@ class LowBalanceAlertState(AlertStateInterface):
         if not balance_decimal:
             return None
 
-        decimals = 10**settings.network.decimals
-        balance_value = Decimal(balance_decimal) / decimals
+        balance_value = Decimal(balance_decimal) / settings.degree
 
         last_alert = await redis_client.get_last_alert()
         if not last_alert:
@@ -125,9 +119,25 @@ async def alert_all_chats(bot: Bot, message: str) -> None:
         return None
 
     for chat_id in chat_ids:
-        try:
-            await bot.send_message(chat_id, message)
-        except TelegramBadRequest as e:
-            logging.warning(e)
+        await send_msg(bot, chat_id, message)
 
+    return None
+
+def retry_send_msg(req):
+    async def wrapper(*args, **kwargs):
+        for attempt in range(settings.bot.request_attempts):
+            try:
+                await req(*args, **kwargs)
+            except TelegramBadRequest as e:
+                logging.warning(f"attempt {attempt} ({e})")
+                await asyncio.sleep(settings.bot.request_delay)
+            else:
+                return None
+        return None
+    return wrapper
+
+
+@retry_send_msg
+async def send_msg(bot: Bot, chat_id: int, message: str) -> None:
+    await bot.send_message(chat_id, message)
     return None
