@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import asyncio
 import logging
 from abc import ABC, abstractmethod
@@ -122,6 +123,7 @@ async def alert_all_chats(bot: Bot, message: str) -> None:
         await send_msg(bot, chat_id, message)
 
     return None
+
 
 def retry_send_msg(req):
     async def wrapper(*args, **kwargs):

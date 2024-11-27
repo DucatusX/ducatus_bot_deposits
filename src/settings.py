@@ -35,6 +35,7 @@ class Settings:
     network: NetworkSettings
     degree: Optional[int]
 
+
 config_path = "/../config.yaml"
 
 with open(os.path.dirname(__file__) + config_path) as config_file:
