@@ -17,6 +17,7 @@ from src.settings import settings
 class AlertStateInterface(ABC):
     def __init__(self, forced=False):
         self.forced = forced
+        self._context = None
 
     @property
     def context(self) -> AlertContext:
