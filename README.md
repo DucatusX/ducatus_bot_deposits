@@ -1,1 +1,1 @@
-Telegram Bot with a balance check function
+Telegram Bot with a balance check and alert functions
