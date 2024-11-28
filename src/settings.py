@@ -25,7 +25,6 @@ class NetworkSettings:
     username: str
     password: str
     decimals: int
-    master_wallet: str
     request_attempts: int
 
 
