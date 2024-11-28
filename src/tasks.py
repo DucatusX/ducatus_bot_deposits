@@ -130,11 +130,10 @@ def retry_send_msg(req):
         for attempt in range(settings.bot.request_attempts):
             try:
                 await req(*args, **kwargs)
+                return None
             except TelegramBadRequest as e:
                 logging.warning(f"attempt {attempt} ({e})")
                 await asyncio.sleep(settings.bot.request_delay)
-            else:
-                return None
         return None
     return wrapper
 
