@@ -50,7 +50,7 @@ class AlertContext:
         if not balance_value:
             return None
 
-        decimal_balance = Decimal(str(balance_value)) * settings.degree
+        decimal_balance = Decimal(str(balance_value)) * settings.network.degree
         await redis_client.update_balance(str(decimal_balance))
         logging.info(f"update balance (current value: {decimal_balance})")
 
@@ -66,7 +66,8 @@ class NoAlertState(AlertStateInterface):
         if not balance_decimal:
             return None
 
-        balance_value = Decimal(balance_decimal) / settings.degree
+        balance_value = Decimal(balance_decimal) / settings.network.degree
+
         if balance_value <= NORMAL_LEVEL['high']:
             self.context.transition_to(LowBalanceAlertState(forced=True))
         return None
@@ -78,7 +79,7 @@ class LowBalanceAlertState(AlertStateInterface):
         if not balance_decimal:
             return None
 
-        balance_value = Decimal(balance_decimal) / settings.degree
+        balance_value = Decimal(balance_decimal) / settings.network.degree
 
         last_alert = await redis_client.get_last_alert()
         if not last_alert:
@@ -89,22 +90,21 @@ class LowBalanceAlertState(AlertStateInterface):
         time_diff = datetime.now() - last_alert
 
         if NORMAL_LEVEL['high'] >= balance_value > NORMAL_LEVEL['low']:
-            message = NORMAL_LEVEL['message']
-            time_delta = NORMAL_LEVEL['time_delta']
+            level_data = NORMAL_LEVEL
         elif MEDIUM_LEVEL['high'] >= balance_value > MEDIUM_LEVEL['low']:
-            message = MEDIUM_LEVEL['message']
-            time_delta = MEDIUM_LEVEL['time_delta']
+            level_data = MEDIUM_LEVEL
         elif balance_value <= CRITICAL_LEVEL['high']:
-            message = CRITICAL_LEVEL['message']
-            time_delta = CRITICAL_LEVEL['time_delta']
+            level_data = CRITICAL_LEVEL
         else:
             self.context.transition_to(NoAlertState())
             return None
 
-        if self.forced or time_diff.days >= time_delta:
+        if self.forced or time_diff.days >= level_data['time_delta']:
             await alert_all_chats(
                 self.context.bot,
-                message
+                level_data['message'].format(
+                    balance_value, settings.network.currency
+                )
             )
             await redis_client.update_last_alert()
 
