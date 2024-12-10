@@ -14,7 +14,7 @@ logger_config = {
         "file": {
             "level": "INFO",
             "class": "logging.FileHandler",
-            "filename": ".log",
+            "filename": "logs/.log",
             "formatter": "base",
             "mode": "a"
         }

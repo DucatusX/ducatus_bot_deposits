@@ -27,12 +27,14 @@ class NetworkSettings:
     decimals: int
     request_attempts: int
 
+    def __post_init__(self):
+        self.degree = 10**self.decimals
+
 
 @dataclass
 class Settings:
     bot: BotSettings
     network: NetworkSettings
-    degree: Optional[int]
 
 
 config_path = "/../config.yaml"
@@ -41,11 +43,10 @@ with open(os.path.dirname(__file__) + config_path) as config_file:
     config_data = yaml.safe_load(config_file)
 
 settings: Settings = class_schema(Settings)().load(config_data)
-settings.degree = 10**settings.network.decimals
 
 
 commands = [
-    BotCommand(command=consts.START_COMMAND, description='activate alerts'),
     BotCommand(command=consts.BALANCE_COMMAND, description='get balance'),
+    BotCommand(command=consts.START_COMMAND, description='activate alerts'),
     BotCommand(command=consts.STOP_COMMAND, description='stop alerts'),
 ]
