@@ -102,7 +102,9 @@ class LowBalanceAlertState(AlertStateInterface):
         if self.forced or time_diff.days >= level_data['time_delta']:
             await alert_all_chats(
                 self.context.bot,
-                level_data['message'].format(balance_value, settings.network.currency)
+                level_data['message'].format(
+                    balance_value, settings.network.currency
+                )
             )
             await redis_client.update_last_alert()
 

@@ -30,6 +30,7 @@ CRITICAL_LEVEL = {
     'high': 100_000,
     'low': 0,
     'time_delta': 2,
-    'message': 'The balance for withdrawal is critically low (less than 100 thousand). '
+    'message': 'The balance for withdrawal is '
+               'critically low (less than 100 thousand). '
                'Please top up the balance. Current balance: {} {}'
 }
