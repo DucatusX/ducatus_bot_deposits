@@ -68,7 +68,7 @@ class NoAlertState(AlertStateInterface):
 
         balance_value = Decimal(balance_decimal) / settings.degree
         if balance_value <= NORMAL_LEVEL['high']:
-            self.context.transition_to(LowBalanceAlertState(forced=True))
+            self.context.transition_to(LowBalanceAlertState(forced=False))
         return None
 
 
